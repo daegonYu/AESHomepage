@@ -1,0 +1,3 @@
+pynecone
+# Python 3.7+
+# NodeJS 12.22.0+

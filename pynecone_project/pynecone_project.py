@@ -42,9 +42,9 @@ class State(pc.State):      # 함수나 변수 전부 State. 으로 접근한다
     compute_processing: bool = False
     view_processing: bool = False
     essay: str = ""
-    # logical_point: int = 0
-    # novelty_point: int = 0
-    # persuasive_point: int = 0
+    logical_point: int = 0
+    novelty_point: int = 0
+    persuasive_point: int = 0
     
     # config_ = '/home/daegon/AES/models/chunk_model.bin1/config.json'    # config는 모두 같다.
     
@@ -60,7 +60,7 @@ class State(pc.State):      # 함수나 변수 전부 State. 으로 접근한다
         # self.input_sentence:list = [self.essay,""]
     
     def click_process(self):        # 버튼을 누르면 True로 변경
-        self.view_processing = False
+        self.view_processing = True
         self.compute_processing = True
         
 
@@ -89,23 +89,23 @@ def index():
             pc.input(placeholder="Input my text"),  
             pc.button(
                 "나의 글 점수 측정하기",
-                # on_click=[State.get_essay,State.click_process,State.DLmodel_run],
+                on_click=[State.click_process],
                 width="100%",
             ),
             
             pc.divider(), # 구분선
             
             # 버튼 누르면 보여주기
-            # pc.cond(
-            #     State.compute_processing,     # 버튼 누르면 보임
-            #     pc.circular_progress(is_indeterminate=True),    # 원형 진행바
-            #     # pc.cond(        # cond() 하나에 글 하나씩
-            #     #     State.view_processing,
-            #     #     # pc.box("1) 논리성 : {}".format(State.logical_point), font_size="1em"),
-            #     #     # pc.box("2) 참신성 : ", font_size="1em"),
-            #     #     # pc.box("3) 설득력 : ", font_size="1em"),  
-            #     # ),
-            # ),                    
+            pc.cond(
+                State.compute_processing,     # 버튼 누르면 보임
+                pc.circular_progress(is_indeterminate=True),    # 원형 진행바
+                pc.cond(        # cond() 하나에 글 하나씩
+                    State.view_processing,
+                    pc.box("1) 논리성 : {}점".format(3), font_size="1em"),
+                    # pc.box("2) 참신성 : ", font_size="1em"),
+                    # pc.box("3) 설득력 : ", font_size="1em"),  
+                ),
+            ),                    
                 
             bg="white",
             padding="3em",
@@ -127,74 +127,3 @@ def index():
 app = pc.App(state=State)
 app.add_page(index)
 app.compile()
-
-
-# import pynecone as pc
-# import openai
-
-
-# class State(pc.State):
-#     """The app state."""
-
-#     prompt = ""
-#     image_url = ""
-#     image_processing = False
-#     image_made = False
-    
-#     sentence = ''
-
-#     def process_image(self):
-#         """Set the image processing flag to true and indicate that the image has not been made yet."""
-#         self.image_made = False
-#         self.image_processing = True
-
-#     def get_image(self):
-#         """Get the image from the prompt."""
-#         try:
-#             # response = openai.Image.create(prompt=self.prompt, n=1, size="1024x1024")
-#             # self.image_url = response["data"][0]["url"]
-#             # Set the image processing flag to false and indicate that the image has been made.
-#             self.sentence = '가나다'
-#             self.image_processing = False
-#             self.image_made = True
-#         except:
-#             self.image_processing = False
-#             return pc.window_alert("Error with OpenAI Execution.")
-
-
-# def index():
-#     return pc.center(
-#         pc.vstack(
-#             pc.heading("DALL-E", font_size="1.5em"),
-#             # pc.input(placeholder="Enter a prompt..", on_blur=State.set_prompt),
-#             pc.button(
-#                 "Generate Image",
-#                 on_click=[State.process_image, State.get_image],
-#                 width="100%",
-#             ),
-#             pc.divider(),
-#             # pc.cond(
-#             #     State.image_processing,
-#             #     pc.circular_progress(is_indeterminate=True),
-#                 # pc.cond(
-#                 #     State.image_made,
-#                 #     pc.box(
-#                 #         State.sentence
-#                 #     ),
-#                 # ),
-#             # ),
-#             bg="white",
-#             padding="2em",
-#             shadow="lg",
-#             border_radius="lg",
-#         ),
-#         width="100%",
-#         height="100vh",
-#         background="radial-gradient(circle at 22% 11%,rgba(62, 180, 137,.20),hsla(0,0%,100%,0) 19%),radial-gradient(circle at 82% 25%,rgba(33,150,243,.18),hsla(0,0%,100%,0) 35%),radial-gradient(circle at 25% 61%,rgba(250, 128, 114, .28),hsla(0,0%,100%,0) 55%)",
-#     )
-
-
-# # Add state and page to the app.
-# app = pc.App(state=State)
-# app.add_page(index, title="Pynecone:DALL-E")
-# app.compile()
