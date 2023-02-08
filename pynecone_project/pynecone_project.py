@@ -5,50 +5,47 @@ import pynecone as pc
 # import os,sys
 # sys.path.append(os.path.dirname('/home/daegon/AES/'))
 from matplotlib import pyplot as plt
-# import torch
-# from . import bert_scoring_model
+import torch
+from . import bert_scoring_model
 
 
 
 class State(pc.State):      # 함수나 변수 전부 State. 으로 접근한다.
     """The app state."""
 
-    compute_processing: bool = False
+    # compute_processing: bool = False
     view_processing: bool = False
     text: str
-    logical_point: int = 0
-    novelty_point: int = 0
-    persuasive_point: int = 0
+    logical_point: int
+    novelty_point: int
+    persuasive_point: int 
     
-    # config_ = '/home/daegon/AES/models/chunk_model.bin1/config.json'    # config는 모두 같다.
+    config_ = '/home/daegon/AES/models/chunk_model.bin1/config.json'    # config는 모두 같다.
     
-    # chunk_model_path = '/home/daegon/AES/models/chunk_model.bin4'; word_doc_model_path = '/home/daegon/AES/models/word_doc_model.bin4' 
-    # chunk_model_path = '/home/daegon/AES/models/chunk_model.bin5'; word_doc_model_path = '/home/daegon/AES/models/word_doc_model.bin5' 
-    # chunk_model_path = '/home/daegon/AES/models/chunk_model.bin6'; word_doc_model_path = '/home/daegon/AES/models/word_doc_model.bin6' 
+    chunk_model_path = '/home/daegon/AES/models/chunk_model.bin4'; word_doc_model_path = '/home/daegon/AES/models/word_doc_model.bin4' 
+    chunk_model_path = '/home/daegon/AES/models/chunk_model.bin5'; word_doc_model_path = '/home/daegon/AES/models/word_doc_model.bin5' 
+    chunk_model_path = '/home/daegon/AES/models/chunk_model.bin6'; word_doc_model_path = '/home/daegon/AES/models/word_doc_model.bin6' 
         
     # '인공지능은 처음부터 먼 길을 왔으며 오늘날 ChatGPT와 같은 AI 모델은 한때 불가능하다고 생각했던 작업을 수행하는 데 도움이 됩니다. OpenAI에서 개발한 ChatGPT는 인간과 같은 응답 생성, 질문 응답 및 텍스트 완성을 포함하여 광범위한 작업을 수행할 수 있는 언어 모델입니다. 인간 언어를 이해하고 생성하는 능력을 갖춘 ChatGPT는 우리가 기술과 상호 작용하는 방식을 혁신할 수 있는 잠재력을 가지고 있습니다. ChatGPT의 가장 흥미로운 점 중 하나는 광범위한 응용 프로그램에서 사용할 수 있는 잠재력입니다.'
-    # input_sentence:list = [essay,""]
+    input_sentence:list
       
     def set_text(self,text):
-        self.text = text    
-        # self.input_sentence:list = [self.essay,""]
+        # self.text = text    
+        self.input_sentence = [text,""]
     
     def click_process(self):        # 버튼을 누르면 True로 변경
         self.view_processing = True
-        self.compute_processing = False
         
 
-    # def DLmodel_run(self):
-    #     logical_model = bert_scoring_model.DocumentBertScoringModel(chunk_model_path=self.chunk_model_path, word_doc_model_path=self.word_doc_model_path, config=self.config_)
-    #     novelty_model = bert_scoring_model.DocumentBertScoringModel(chunk_model_path=self.chunk_model_path, word_doc_model_path=self.word_doc_model_path, config=self.config_)
-    #     persuasive_model = bert_scoring_model.DocumentBertScoringModel(chunk_model_path=self.chunk_model_path, word_doc_model_path=self.word_doc_model_path, config=self.config_)
+    def DLmodel_run(self):
+        logical_model = bert_scoring_model.DocumentBertScoringModel(chunk_model_path=self.chunk_model_path, word_doc_model_path=self.word_doc_model_path, config=self.config_)
+        novelty_model = bert_scoring_model.DocumentBertScoringModel(chunk_model_path=self.chunk_model_path, word_doc_model_path=self.word_doc_model_path, config=self.config_)
+        persuasive_model = bert_scoring_model.DocumentBertScoringModel(chunk_model_path=self.chunk_model_path, word_doc_model_path=self.word_doc_model_path, config=self.config_)
 
-    #     self.logical_point = logical_model.result_point(self.input_sentence, mode_='logical')
-    #     self.novelty_point = novelty_model.result_point(self.input_sentence, mode_='novelty')
-    #     self.persuasive_point = persuasive_model.result_point(self.input_sentence, mode_='persuasive')
+        self.logical_point = logical_model.result_point(self.input_sentence, mode_='logical')
+        self.novelty_point = novelty_model.result_point(self.input_sentence, mode_='novelty')
+        self.persuasive_point = persuasive_model.result_point(self.input_sentence, mode_='persuasive')
         
-    #     self.compute_processing = False
-    #     self.view_processing = True
         
 
 def index():
@@ -75,8 +72,11 @@ def index():
             
             pc.cond(
                 State.view_processing,
-                pc.box(State.text),
-                pc.box(State.text)
+                pc.vstack(
+                    pc.box(State.input_sentence[0]),
+                    pc.box(State.input_sentence[0]),
+                    pc.box(State.input_sentence[0])
+                )
             ),
             
             pc.divider(), # 구분선
