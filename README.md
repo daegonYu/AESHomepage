@@ -3,4 +3,4 @@ Pynecone 라이브러리를 이용한 글 자동 평가 홈페이지
 
 
 
-<img src="./관련사진/AES pynecone 홈페이지 .png" >
+<img src="./관련사진/pyneconeAES.png" >
